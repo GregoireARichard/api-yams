@@ -12,7 +12,7 @@ import { errorCouldNotCreateUser, errorUnauthorized } from "../errors/errors";
 
 const ADMIN_AUD = "api-yums";
 const ISSUER = "api-auth";
-const SIGNING = process.env.PUB_KEY;
+export const SIGNING = process.env.PUB_KEY;
 
 export class AuthService {
   private static generateJwt(email: string): string {
@@ -22,7 +22,7 @@ export class AuthService {
       },
       SIGNING ? SIGNING : "",
       {
-        expiresIn: "30 minutes",
+        expiresIn: "1 hour",
         audience: ADMIN_AUD,
         issuer: ISSUER,
       }

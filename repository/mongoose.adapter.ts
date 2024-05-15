@@ -133,6 +133,7 @@ export class MongooseAdapter {
       await Winner.create({
         email: email,
         prizesWon: prizes,
+        wonAt: new Date()
       });
     } catch (error) {
       console.log(error);
@@ -217,7 +218,7 @@ export class MongooseAdapter {
       const foundWinners = await Winner.find({});
       if (foundWinners) {
         foundWinners.map((winner) => {
-          winners.push({ email: winner.email, prizesWon: winner.prizesWon });
+          winners.push({ email: winner.email, prizesWon: winner.prizesWon, wonAt: winner.wonAt });
         });
       }
     } catch (error) {

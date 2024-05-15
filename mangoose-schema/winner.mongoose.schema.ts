@@ -4,6 +4,7 @@ import { IWinner } from "../types/IWinner.type";
 const schema = new Schema<IWinner, Model<IWinner>>({
   email: { type: String, required: true },
   prizesWon: { type: Number, required: true },
+  wonAt: { type: Date, required: true },
 });
 
 const collectionName = "winners";

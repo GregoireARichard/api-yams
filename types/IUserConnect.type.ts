@@ -1,4 +1,4 @@
 export interface IUserConnect {
-    email: string,
-    password: string
+  email: string;
+  password: string;
 }

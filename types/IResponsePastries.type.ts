@@ -1,5 +1,5 @@
 export interface IResponsePastries {
-    name: string,
-    stockWon: number
-    imageLink: string
+  name: string;
+  stockWon: number;
+  imageLink: string;
 }

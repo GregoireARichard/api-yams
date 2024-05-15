@@ -49,7 +49,7 @@ export class MongooseAdapter {
         return false;
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return false;
     }
   }
@@ -81,32 +81,31 @@ export class MongooseAdapter {
     return false;
   }
 
-  public static async createGameOrUpdateGame(email: string, score: number[]): Promise<void> {
+  public static async createGameOrUpdateGame(
+    email: string,
+    score: number[]
+  ): Promise<void> {
     try {
       await mongoose.connect(mongoUri);
-      const existingGame = await Game.findOne({usermail: email})
+      const existingGame = await Game.findOne({ usermail: email });
 
       if (existingGame) {
-         await Game.updateOne(
+        await Game.updateOne(
           { usermail: email },
           {
             $inc: { numberPlayed: 1 },
             $push: { score: { $each: [score] } },
           }
         ).exec();
-      }
-      
-
-      else {
+      } else {
         await Game.create({
           usermail: email,
           numberPlayed: 1,
-          score: [score]
-        })
+          score: [score],
+        });
       }
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
   public static async increaseRolledTime(email: string): Promise<void> {
@@ -115,110 +114,126 @@ export class MongooseAdapter {
       const game: IGames | null = await Game.findOne({
         email: email,
       });
-      if(game && game.numberPlayed < 3){
-        await Game.findOneAndUpdate({email: email}, {numberPlayed: game.numberPlayed + 1}).exec()
+      if (game && game.numberPlayed < 3) {
+        await Game.findOneAndUpdate(
+          { email: email },
+          { numberPlayed: game.numberPlayed + 1 }
+        ).exec();
       }
     } catch (error) {
       console.log(error);
     }
   }
-  public static async insertWinner(email: string, prizes: number): Promise<void>{
+  public static async insertWinner(
+    email: string,
+    prizes: number
+  ): Promise<void> {
     try {
       await mongoose.connect(mongoUri);
       await Winner.create({
         email: email,
-        prizesWon: prizes
-      })
+        prizesWon: prizes,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
-  public static async deleteWinner(email: string): Promise<void>{
+  public static async deleteWinner(email: string): Promise<void> {
     try {
       await mongoose.connect(mongoUri);
       await Winner.deleteOne({
         email: email,
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
-  private static async removeFromStock(prize: number, pastryId: string): Promise<void> {
+  private static async removeFromStock(
+    prize: number,
+    pastryId: string
+  ): Promise<void> {
     try {
       await mongoose.connect(mongoUri);
-      // remove prize number and add quantityWon from pastryID 
+      // remove prize number and add quantityWon from pastryID
       await Pastries.updateOne(
         { _id: pastryId },
         {
           $inc: {
-            stock: -prize, 
-            quantityWon: prize, 
+            stock: -prize,
+            quantityWon: prize,
           },
         }
       );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
-  public static async getPastriesFromStock(prize: number): Promise<IResponsePastries[]> {
-    let neededPastry = prize
-    let wonPastries: IResponsePastries[] = []
+  public static async getPastriesFromStock(
+    prize: number
+  ): Promise<IResponsePastries[]> {
+    let neededPastry = prize;
+    let wonPastries: IResponsePastries[] = [];
     try {
       await mongoose.connect(mongoUri);
-      const foundPastries = await Pastries.find({ stock: { $gt: 0 } })
-      
-      if (prize <= 0){
-        return [] 
+      const foundPastries = await Pastries.find({ stock: { $gt: 0 } });
+
+      if (prize <= 0) {
+        return [];
       }
 
-      if (foundPastries[0] && foundPastries[0].stock >= prize){
-        neededPastry -= foundPastries[0].stock
-        this.removeFromStock(prize, foundPastries[0].id)
-        wonPastries.push({name:foundPastries[0].name, stockWon: prize,  imageLink: foundPastries[0].image })
-      }
-      else if (foundPastries[0] && foundPastries[0].stock < prize) {
+      if (foundPastries[0] && foundPastries[0].stock >= prize) {
+        neededPastry -= foundPastries[0].stock;
+        this.removeFromStock(prize, foundPastries[0].id);
+        wonPastries.push({
+          name: foundPastries[0].name,
+          stockWon: prize,
+          imageLink: foundPastries[0].image,
+        });
+      } else if (foundPastries[0] && foundPastries[0].stock < prize) {
         // it removes stock by iterating over pastries that have stock left
-        foundPastries.map(pastry => {
-          if(neededPastry > 0 && pastry.stock > 0){
-            this.removeFromStock(pastry.stock, pastry.id)
-            wonPastries.push({name: pastry.name, stockWon: prize, imageLink: pastry.image})
-            neededPastry -= pastry.stock
+        foundPastries.map((pastry) => {
+          if (neededPastry > 0 && pastry.stock > 0) {
+            this.removeFromStock(pastry.stock, pastry.id);
+            wonPastries.push({
+              name: pastry.name,
+              stockWon: prize,
+              imageLink: pastry.image,
+            });
+            neededPastry -= pastry.stock;
           }
-        })
+        });
       }
-      
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    return wonPastries
+    return wonPastries;
   }
 
-  public static async getWinners(): Promise<IWinner[]>{
-    const winners: IWinner[] = []
+  public static async getWinners(): Promise<IWinner[]> {
+    const winners: IWinner[] = [];
     try {
       await mongoose.connect(mongoUri);
-      const foundWinners = await Winner.find({})
-      if(foundWinners){
-        foundWinners.map(winner => {
-          winners.push({email: winner.email, prizesWon: winner.prizesWon})
-        })
+      const foundWinners = await Winner.find({});
+      if (foundWinners) {
+        foundWinners.map((winner) => {
+          winners.push({ email: winner.email, prizesWon: winner.prizesWon });
+        });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    return winners
+    return winners;
   }
 
-  public static async deleteGame(email: string): Promise<void>{
+  public static async deleteGame(email: string): Promise<void> {
     try {
       await mongoose.connect(mongoUri);
       const result = await Game.deleteOne({
         usermail: email,
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 }

@@ -7,14 +7,16 @@ import { IRollDiceReq, IRollDiceRes } from "../types/IRollDice.type";
 import { IWinner } from "../types/IWinner.type";
 
 export class GameService {
-
   public static async rollDices(user: IRollDiceReq): Promise<IRollDiceRes> {
-    if (await MongooseAdapter.hasUserAlreadyWon(user.email) || await MongooseAdapter.hasUserAlreadyPlayed(user.email) ) {
+    if (
+      (await MongooseAdapter.hasUserAlreadyWon(user.email)) ||
+      (await MongooseAdapter.hasUserAlreadyPlayed(user.email))
+    ) {
       return {
         error: errorUserHasAlreadyPlayedOrwin,
         dice: [],
-        prize: []
-      }
+        prize: [],
+      };
     }
 
     const diceResArr: number[] = [];
@@ -22,20 +24,21 @@ export class GameService {
       const randomNumber: number = Math.floor(Math.random() * 6) + 1;
       diceResArr.push(randomNumber);
     }
-    //create or update game 
-    await MongooseAdapter.createGameOrUpdateGame(user.email, diceResArr)
+    //create or update game
+    await MongooseAdapter.createGameOrUpdateGame(user.email, diceResArr);
 
     // win logic
     // if diceResArr contains one of the possible combinations -> inserts into winners
-    const { isWinning, numberOfPrizes: prize } = this.isCombinationWinning(diceResArr);
+    const { isWinning, numberOfPrizes: prize } =
+      this.isCombinationWinning(diceResArr);
     if (isWinning) {
-     await MongooseAdapter.insertWinner(user.email, prize);
+      await MongooseAdapter.insertWinner(user.email, prize);
     }
 
     // query pastries to change the numbers of pasties won and left
-    let finalPrize: IResponsePastries[] = []
-    if(prize > 0){
-     finalPrize = await MongooseAdapter.getPastriesFromStock(prize)
+    let finalPrize: IResponsePastries[] = [];
+    if (prize > 0) {
+      finalPrize = await MongooseAdapter.getPastriesFromStock(prize);
     }
 
     return {
@@ -119,8 +122,8 @@ export class GameService {
     return doubleCount === 2;
   }
 
-  public static async getResults(): Promise<IWinner[]>{
-    const winners = await MongooseAdapter.getWinners()
-    return winners
+  public static async getResults(): Promise<IWinner[]> {
+    const winners = await MongooseAdapter.getWinners();
+    return winners;
   }
 }

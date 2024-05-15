@@ -1,6 +1,6 @@
 export interface IAuthSuccessResponse {
-    jwt: string
+  jwt: string;
 }
 export interface IAuthErrorResponse {
-    error: string
+  error: string;
 }

@@ -1,11 +1,11 @@
-import { IResponsePastries } from "./IResponsePastries.type"
+import { IResponsePastries } from "./IResponsePastries.type";
 
 export interface IRollDiceReq {
-    email: string
+  email: string;
 }
 export interface IRollDiceRes {
-    error?: string,
-    success?: string,
-    dice: number[]
-    prize: IResponsePastries[]
+  error?: string;
+  success?: string;
+  dice: number[];
+  prize: IResponsePastries[];
 }

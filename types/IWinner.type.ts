@@ -1,4 +1,4 @@
 export interface IWinner {
-    email: string,
-    prizesWon: number
+  email: string;
+  prizesWon: number;
 }

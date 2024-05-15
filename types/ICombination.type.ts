@@ -1,4 +1,4 @@
 export interface ICombination {
-    isWinning: boolean,
-    numberOfPrizes: number,
+  isWinning: boolean;
+  numberOfPrizes: number;
 }

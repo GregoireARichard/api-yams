@@ -1,3 +1,3 @@
 export interface INewGameReq {
-    email: string,
+  email: string;
 }

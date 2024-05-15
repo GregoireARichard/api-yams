@@ -1,6 +1,6 @@
-export interface IUser{
-    name: string,
-    email: string,
-    password: string,
-    prizeWon: string[]
+export interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  prizeWon: string[];
 }

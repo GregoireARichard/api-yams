@@ -1,5 +1,4 @@
 import express from "express";
-import { INewGameReq } from "../types/INewGame.type";
 import { GameService } from "../services/game.service";
 import { IRollDiceReq } from "../types/IRollDice.type";
 import jwt from 'jsonwebtoken';

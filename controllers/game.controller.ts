@@ -13,7 +13,6 @@ export class GameController {
     try {
       const authorizationHeader = req.headers.authorization;
       if (!authorizationHeader) {
-
         res.status(401).json({ error: 'Missing authorization header' });
         return;
       }

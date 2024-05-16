@@ -156,7 +156,6 @@ export class MongooseAdapter {
   ): Promise<void> {
     try {
       await mongoose.connect(mongoUri);
-      // remove prize number and add quantityWon from pastryID
       await Pastries.updateOne(
         { _id: pastryId },
         {
